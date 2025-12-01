@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script type="text/javascript">
+// <![CDATA[
+var colour="#00baff";
+var sparkles=460;
+
+/****************************
+*  Tinkerbell Magic Sparkle *
+* (c) 2005 mf2fm web-design *
+*  http://www.mf2fm.com/rv  *
+* DON'T EDIT BELOW THIS BOX *
+unless you can code (aka me)
+****************************/
+var x=ox=400;
+var y=oy=300;
+var swide=800;
+var shigh=600;
+var sleft=sdown=0;
+var tiny=new Array();
+var star=new Array();
+var starv=new Array();
+var starx=new Array();
+var stary=new Array();
+var tinyx=new Array();
+var tinyy=new Array();
+var tinyv=new Array();
+
+window.onload=function() { if (document.getElementById) {
+  var i, rats, rlef, rdow;
+  for (var i=0; i<sparkles; i++) {
+    var rats=createDiv(3, 3);
+    rats.style.visibility="hidden";
+    document.body.appendChild(tiny[i]=rats);
+    starv[i]=0;
+    tinyv[i]=0;
+    var rats=createDiv(5, 5);
+    rats.style.backgroundColor="transparent";
+    rats.style.visibility="hidden";
+    var rlef=createDiv(1, 5);
+    var rdow=createDiv(5, 1);
+    rats.appendChild(rlef);
+    rats.appendChild(rdow);
+    rlef.style.top="2px";
+    rlef.style.left="0px";
+    rdow.style.top="0px";
+    rdow.style.left="2px";
+    document.body.appendChild(star[i]=rats);
+  }
+  set_width();
+  sparkle();
+}}
+
+function sparkle() {
+  var c;
+  if (x!=ox || y!=oy) {
+    ox=x;
+    oy=y;
+    for (c=0; c<sparkles; c++) if (!starv[c]) {
+      star[c].style.left=(starx[c]=x)+"px";
+      star[c].style.top=(stary[c]=y)+"px";
+      star[c].style.clip="rect(0px, 5px, 5px, 0px)";
+      star[c].style.visibility="visible";
+      starv[c]=50;
+      break;
+    }
+  }
+  for (c=0; c<sparkles; c++) {
+    if (starv[c]) update_star(c);
+    if (tinyv[c]) update_tiny(c);
+  }
+  setTimeout("sparkle()", 40);
+}
+
+function update_star(i) {
+  if (--starv[i]==25) star[i].style.clip="rect(1px, 4px, 4px, 1px)";
+  if (starv[i]) {
+    stary[i]+=1+Math.random()*3;
+    if (stary[i]<shigh+sdown) {
+      star[i].style.top=stary[i]+"px";
+      starx[i]+=(i%5-2)/5;
+      star[i].style.left=starx[i]+"px";
+    }
+    else {
+      star[i].style.visibility="hidden";
+      starv[i]=0;
+      return;
+    }
+  }
+  else {
+    tinyv[i]=50;
+    tiny[i].style.top=(tinyy[i]=stary[i])+"px";
+    tiny[i].style.left=(tinyx[i]=starx[i])+"px";
+    tiny[i].style.width="2px";
+    tiny[i].style.height="2px";
+    star[i].style.visibility="hidden";
+    tiny[i].style.visibility="visible"
+  }
+}
+
+function update_tiny(i) {
+  if (--tinyv[i]==25) {
+    tiny[i].style.width="1px";
+    tiny[i].style.height="1px";
+  }
+  if (tinyv[i]) {
+    tinyy[i]+=1+Math.random()*3;
+    if (tinyy[i]<shigh+sdown) {
+      tiny[i].style.top=tinyy[i]+"px";
+      tinyx[i]+=(i%5-2)/5;
+      tiny[i].style.left=tinyx[i]+"px";
+    }
+    else {
+      tiny[i].style.visibility="hidden";
+      tinyv[i]=0;
+      return;
+    }
+  }
+  else tiny[i].style.visibility="hidden";
+}
+
+document.onmousemove=mouse;
+function mouse(e) {
+  set_scroll();
+  y=(e)?e.pageY:event.y+sdown;
+  x=(e)?e.pageX:event.x+sleft;
+}
+
+function set_scroll() {
+  if (typeof(self.pageYOffset)=="number") {
+    sdown=self.pageYOffset;
+    sleft=self.pageXOffset;
+  }
+  else if (document.body.scrollTop || document.body.scrollLeft) {
+    sdown=document.body.scrollTop;
+    sleft=document.body.scrollLeft;
+  }
+  else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
+    sleft=document.documentElement.scrollLeft;
+	sdown=document.documentElement.scrollTop;
+  }
+  else {
+    sdown=0;
+    sleft=0;
+  }
+}
+
+window.onresize=set_width;
+function set_width() {
+  if (typeof(self.innerWidth)=="number") {
+    swide=self.innerWidth;
+    shigh=self.innerHeight;
+  }
+  else if (document.documentElement && document.documentElement.clientWidth) {
+    swide=document.documentElement.clientWidth;
+    shigh=document.documentElement.clientHeight;
+  }
+  else if (document.body.clientWidth) {
+    swide=document.body.clientWidth;
+    shigh=document.body.clientHeight;
+  }
+}
+
+function createDiv(height, width) {
+  var div = document.createElement("div");
+  div.style.position = "absolute";
+  div.style.height = height + "px";
+  div.style.width = width + "px";
+  div.style.overflow = "hidden";
+  div.style.backgroundColor = colour;
+
+  // 🟦 keep sparkles above everything in the app
+  div.style.zIndex = "9999";
+
+  // 🟦 don’t block mouse / hover on cards, bubbles, timeline, etc.
+  div.style.pointerEvents = "none";
+
+  return div;
+}
+// ]]>
+</script>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Written in the Stars for Libby</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button id="fullscreen-toggle" class="fullscreen-toggle" aria-label="Toggle fullscreen">
+  ⛶
+</button>
+  <!-- Star field background layer -->
+  <div class="star-field">
+    <span class="star star-lg star1"></span>
+    <span class="star star-md star2"></span>
+    <span class="star star-sm star3"></span>
+    <span class="star star-md star4"></span>
+    <span class="star star-lg star5"></span>
+    <span class="star star-md star6"></span>
+    <span class="star star-sm star7"></span>
+    <span class="star star-md star8"></span>
+    <span class="star star-lg star9"></span>
+    <span class="star star-sm star10"></span>
+    <span class="star star-md star11"></span>
+    <span class="star star-lg star12"></span>
+    <span class="star star-sm star13"></span>
+    <span class="star star-md star14"></span>
+    <span class="star star-lg star15"></span>
+  </div>
+
+  <div id="glow"></div>
+
+    <!-- Sliding timeline on the left -->
+  <div class="timeline-wrapper">
+    <div class="timeline-panel">
+      <p class="timeline-title">Your star path</p>
+        <ul class="timeline-list">
+        <li class="timeline-item" data-scene="intro-title">Title screen</li>
+        <li class="timeline-item" data-scene="intro-cat">A little white cat</li>
+        <li class="timeline-item" data-scene="beginnings">Constellation I: Our Beginnings</li>
+        <li class="timeline-item" data-scene="adventures">Constellation II: Adventures Together</li>
+        <li class="timeline-item" data-scene="gifts">Constellation III: Little Things I Made For You</li>
+        <li class="timeline-item" data-scene="final">Starry ending</li>
+        <li class="timeline-item timeline-item-locked" data-scene="secret">Secret constellation</li>
+        </ul>
+      <div class="timeline-hint">Hover here to open ✨</div>
+    </div>
+  </div>
+
+
+  <div id="auth-gate" class="auth-gate">
+  <div class="auth-card">
+    <h1 class="auth-title">Who is your boyfriend?</h1>
+    <p class="auth-subtitle">
+      Only the right answer can open the sky. ✨
+    </p>
+
+    <div class="auth-input-row">
+      <input
+        id="auth-first"
+        type="text"
+        placeholder="First name"
+        autocomplete="off"
+      />
+      <input
+        id="auth-last"
+        type="text"
+        placeholder="Last name"
+        autocomplete="off"
+      />
+    </div>
+
+    <button id="auth-submit" class="auth-button">
+      Unlock the stars
+    </button>
+
+    <p id="auth-error" class="auth-error hidden">
+      The stars don’t recognize that answer. Try again.
+    </p>
+  </div>
+</div>
+  <!-- Main app content -->
+  <div id="app" class="hidden">
+    <h1 class="title">Written in the Stars for Libby</h1>
+    <p class="subtitle">Guided by a Starry White Cat</p>
+
+    <button id="start-button">Begin</button>
+  </div>
+
+  <!-- Bottom-right guide cat (global, outside the card) -->
+  <div id="guide-cat" class="guide-cat hidden">
+    <div class="cat-image small">
+      <img id="guide-cat-img" src="cats/idle.gif" alt="Little white cat guide" />
+    </div>
+  </div>
+
+  <!-- Cat music player -->
+  <div id="cat-player" class="cat-player hidden">
+    <p class="cat-player-title">Star Jukebox</p>
+    <div class="cat-player-songs">
+      <button class="cat-song-button" data-song="haruko">Haruko</button>
+      <button class="cat-song-button" data-song="sun">Sun</button>
+      <button class="cat-song-button" data-song="love">Love</button>
+      <button class="cat-song-button" data-song="radio">Radio – Bershy</button>
+      <button class="cat-song-button" data-song="kissme">Kiss Me</button>
+      <button class="cat-song-button" data-song="bubbly">Bubbly</button>
+  </div>
+    <p class="cat-player-now" id="cat-now-playing"></p>
+  </div>
+
+  <!-- Shared audio element for the songs -->
+  <audio id="cat-audio"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
